@@ -42,12 +42,12 @@ Flowers <- pivot_wider(data = TempFlowers, id_cols = c(Watershed, Shrub_id, Trea
 # if the total shrub area is z, then there are a flowering stems in the whole shrub
 
 # Include shrub size
-Flowers <- left_join(Flowers, select(Area, Shrub_id, Size2019, Size2018), by = "Shrub_id")
+Flowers <- left_join(Flowers, select(Area, Shrub_id, size2019, size2018), by = "Shrub_id")
 
 # This regression line ignores those values where there were 0 flowering stems
-ggplot(Flowers, aes(x = Size2018, y = EstFloweringStems2018)) +
-  geom_point()+
-  geom_smooth(data = subset(Flowers, EstFloweringStems2018 != 0), method = "lm")
+# ggplot(Flowers, aes(x = Size2018, y = EstFloweringStems2018)) +
+  #geom_point()+
+  #geom_smooth(data = subset(Flowers, EstFloweringStems2018 != 0), method = "lm")
 
 # Need to combine both years of data
 # FlowerRegression <- lm(EstFloweringStems ~ Size, data = Flowers)
@@ -64,39 +64,7 @@ Inflorescences <- data.frame(
   SEInflorescences2019 = c(0.04, 5.02, 0.00, 1.30)
 )
 
-# Number of inflorescences per shrub island
-
-# try making a loop - for every flowering stems quantity, match the watershed, treatment, and year
-# multiply the corresponding EstFloweringStems2019 by the mean - SE and mean + SE
-# is this a reasonable way to get a range of possible inflorescence numbers?
-# does it even matter if there's a range? Just use the mean?
-# Or ask Wedel for the raw data so I can pick from a histogram?
-Flowers$EstInflorescences2019 <- vector(length = nrow(Flowers))
-Flowers$EstInflorescences2018 <- vector(length = nrow(Flowers))
-
-for(i in 1:nrow(Flowers)) {
-  TreatmentMatch <- sapply(Inflorescences$Treatment, identical, Flowers$Treatment[[i]])
-  WatershedMatch <- sapply(Inflorescences$Watershed, identical, Flowers$Watershed[[i]])
-  Flowers$EstInflorescences2019[i] <- 
-    Inflorescences$MeanInflorescences2019[TreatmentMatch & WatershedMatch] *
-    Flowers$EstFloweringStems2019[i]
-  }
-
-for(i in 1:nrow(Flowers)) {
-  TreatmentMatch <- sapply(Inflorescences$Treatment, identical, Flowers$Treatment[[i]])
-  WatershedMatch <- sapply(Inflorescences$Watershed, identical, Flowers$Watershed[[i]])
-  Flowers$EstInflorescences2018[i] <- 
-    Inflorescences$MeanInflorescences2018[TreatmentMatch & WatershedMatch] *
-    Flowers$EstFloweringStems2018[i]
-}
-
-ggplot(Flowers, aes(x = Size2018, y = EstInflorescences2018)) +
-  geom_point()+
-  geom_smooth(method = "lm")
-
-ggplot(Flowers, aes(x = Size2019, y = EstInflorescences2019)) +
-  geom_point()+
-  geom_smooth(method = "lm")
+write.csv(Inflorescences, "Wedel Inflorescences.csv")
 
 # Save reproduction data to combine with Schulstrom
 write.csv(Flowers, "Wedel Reproduction.csv")
