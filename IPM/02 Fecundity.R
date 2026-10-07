@@ -88,13 +88,17 @@ max(WedelRepro$EstFruit2019)
 ###################################################################################
 # Germination
 # Using just the bird gut (acid and rock tumbling) simulation
-WielandGermRate <- 
 # Wieland germination rate code in 01 Analyze Germination R script.R
+WielandGermRate <- 0.3382358
 
 # Applying this one germination value to the fruit crop numbers
 
+
 # Calculate seed per m2
-  
+# size is in m2
+WedelRepro$SeedPerArea2018 <- WedelRepro$EstFruit2018/WedelRepro$size2018
+WedelRepro$SeedPerArea2019 <- WedelRepro$EstFruit2019/WedelRepro$size2019
+
 # Put into a matrix with FRI and browsing
 
 

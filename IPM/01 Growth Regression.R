@@ -2,8 +2,6 @@
 # August 4, 2026
 # Sophie Wieland
 getwd()
-library(ggplot2)
-library(dplyr)
 library(tidyverse)
 setwd("C:/Users/Sophie.Wieland/Documents/KSU/Masters Thesis/Dogwood IPM")
 
