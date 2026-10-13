@@ -49,10 +49,7 @@ ReproPerStem[2,4] <- mean(c(ReproPerStem[2,4], SEKBSF))
 # Fruit Set (per shrub island)
 
 # loop - for every flowering stems quantity, match the watershed, treatment, and year
-# multiply the corresponding EstFloweringStems2019 by the mean - SE and mean + SE
-# is this a reasonable way to get a range of possible inflorescence numbers?
-# does it even matter if there's a range? Just use the mean?
-# Or ask Wedel for the raw data so I can pick from a histogram?
+# multiply the corresponding EstFloweringStems2019 by the mean
 WedelRepro$EstInflorescences2019 <- vector(length = nrow(WedelRepro))
 WedelRepro$EstInflorescences2018 <- vector(length = nrow(WedelRepro))
 
