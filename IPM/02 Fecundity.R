@@ -17,6 +17,8 @@ KBSFRepro <- read.csv("../Literature Search for Model Building/fruits_3yrs.csv")
 WhelanRepro <- read.csv("../Literature Search for Model Building/WhelanAverageGerm.csv")
 WhelandSoil <- read.csv("../Literature Search for Model Building/WhelanSoilGerm.csv")
 
+GliddenFruit <- read.csv("../Literature Search for Model Building/Glidden/ProcessedN4CDogwood.csv")
+
 # In chronological order: Flowering, Fruit Set, Germination
 #################################################################################
 # Flowering
@@ -88,15 +90,85 @@ max(WedelRepro$EstFruit2019)
 # Wieland germination rate code in 01 Analyze Germination R script.R
 WielandGermRate <- 0.3382358
 
-# Applying this one germination value to the fruit crop numbers
-
+# Apply this one germination value to the fruit crop numbers
 
 # Calculate seed per m2
 # size is in m2
 WedelRepro$SeedPerArea2018 <- WedelRepro$EstFruit2018/WedelRepro$size2018
 WedelRepro$SeedPerArea2019 <- WedelRepro$EstFruit2019/WedelRepro$size2019
 
-# Put into a matrix with FRI and browsing
+###################################################################################
+# Function for fruiting number
+WedelRepro <- rename(WedelRepro, Browse = Treatment)
+WedelRepro$FRI <- ifelse(WedelRepro$Watershed == "4B", 4, 20)
+
+# stack year in one column
+Repro2018 <- select(WedelRepro, c(Watershed, Shrub_id, Browse, EstFloweringStems2018, size2018, EstInflorescences2018, EstFruit2018, SeedPerArea2018, FRI))
+Repro2018$Year <- 2018
+Repro2018 <- rename(Repro2018, c(EstFloweringStems = EstFloweringStems2018,
+                                 size = size2018,
+                                 EstInflorescences = EstInflorescences2018,
+                                 EstFruit = EstFruit2018,
+                                 SeedPerArea = SeedPerArea2018))
+Repro2019 <- select(WedelRepro, c(Watershed, Shrub_id, Browse, EstFloweringStems2019, size2019, EstInflorescences2019, EstFruit2019, SeedPerArea2019, FRI))
+Repro2019$Year <- 2019
+Repro2019 <- rename(Repro2019, c(EstFloweringStems = EstFloweringStems2019,
+                                 size = size2019,
+                                 EstInflorescences = EstInflorescences2019,
+                                 EstFruit = EstFruit2019,
+                                 SeedPerArea = SeedPerArea2019))
+
+Repro <- rbind(Repro2018, Repro2019)
+# make a subset where fruit number is not 0
+FruitRepro <- Repro[which(Repro$EstFruit>0), ]
+# because we're going to use the Glidden data first as probability of fruiting,
+# and this as the number of fruits (if you make it over the hurdle to fruiting)
+
+num_fruit <- lm(EstFruit ~ size + Browse * FRI, data = FruitRepro)
+alt_num_fruit <- lm(EstFruit ~ size + Browse + FRI, data = FruitRepro)
+# models are identical - only two browsing data points
+
+# look at residuals
+res_num_fruit <- resid(num_fruit)
+plot(FruitRepro$size, res_num_fruit)
+abline(0, 0)
+
+standardized_res_num_fruit <- rstandard(num_fruit)
+plot(FruitRepro$size, standardized_res_num_fruit)
+abline(0, 0)
+# bad!
+
+# remove the two browsing points, and look again
+FruitFireRepro <- FruitRepro[which(FruitRepro$Browse=="control"), ]
+fire_fruit <- lm(EstFruit ~ size + FRI, data = FruitFireRepro)
+res_fire_fruit <- resid(fire_fruit)
+plot(FruitFireRepro$size, res_fire_fruit)
+abline(0, 0)
+
+standardized_res_fire_fruit <- rstandard(fire_fruit)
+plot(FruitFireRepro$size, standardized_res_fire_fruit)
+abline(0, 0)
+# also bad!
+# use the average by size cop out instead; residuals were not normal, which is why we abandoned this
+
+#predictors <- expand.grid(Browse = unique(WedelRepro$Browse), FRI = unique(WedelRepro$FRI))
+# how add size to predictors??
+
+#test <- predict(num_fruit, newdata = predictors, type = "response")
+
+ggplot(FruitRepro, aes(x = size, y = EstFruit, group = Browse, color = Browse)) +
+  geom_point()+
+  geom_smooth(method = "lm")+
+  facet_wrap(~FRI)
+
+ggplot(WedelRepro, aes(x = size2019, y = EstFruit2019)) +
+  geom_point()+
+  geom_smooth(method = "lm")
+#################################################################################
+# Function for fruiting probability
+prob_fruit <- glm(Fruit ~ Area_m2026 + Graze * FRI, family = binomial(link = "logit"), data = GliddenFruit)
+res_prob_fruit <- resid(prob_fruit)
+
 
 
 #################################################################################

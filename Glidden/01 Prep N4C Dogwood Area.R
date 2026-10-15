@@ -19,13 +19,13 @@ DogwoodArea$SubWatershed <- replace(DogwoodArea$SubWatershed, DogwoodArea$SubWat
 # Add columns for Watershed, FRI, Grazer (Bison or exclosure)
 DogwoodArea$Watershed <- "N4C"
 DogwoodArea$FRI <- 1
-
-####### HERE need to add a column for grazer, use the DogwoodNotes to find the exclosure info
+DogwoodArea$Graze <- ifelse(DogwoodNotes$Exclosure[match(DogwoodArea$Id, DogwoodNotes$Shrub.ID)] == "yes", "ungrazed", "bison")
+DogwoodArea$Fruit <- ifelse(DogwoodNotes$Flowering[match(DogwoodArea$Id, DogwoodNotes$Shrub.ID)] == "yes", 1, 0)
 
 # Remove rows for shrubs that are too blob-like to use (i.e. growing into other islands)
 # This is a list of the shrubs excluded from Arc GIS
 ExcludeShrubs <- c(5, 22, 23, 25, 26, 33, 258, 259, 260, 261, 297, 298, 318, 319, 355, 357)
 
-######## HERE exclude those above, but need to match ID
+DogwoodArea <- DogwoodArea[!DogwoodArea$Id %in% ExcludeShrubs, ]
 
-write.csv(DogwoodArea, "__.csv")
+write.csv(DogwoodArea, "ProcessedN4CDogwood.csv")
