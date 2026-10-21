@@ -124,30 +124,30 @@ FruitRepro <- Repro[which(Repro$EstFruit>0), ]
 # because we're going to use the Glidden data first as probability of fruiting,
 # and this as the number of fruits (if you make it over the hurdle to fruiting)
 
-num_fruit <- lm(EstFruit ~ size + Browse * FRI, data = FruitRepro)
-alt_num_fruit <- lm(EstFruit ~ size + Browse + FRI, data = FruitRepro)
+#num_fruit <- lm(EstFruit ~ size + Browse * FRI, data = FruitRepro)
+#alt_num_fruit <- lm(EstFruit ~ size + Browse + FRI, data = FruitRepro)
 # models are identical - only two browsing data points
 
 # look at residuals
-res_num_fruit <- resid(num_fruit)
-plot(FruitRepro$size, res_num_fruit)
-abline(0, 0)
+#res_num_fruit <- resid(num_fruit)
+#plot(FruitRepro$size, res_num_fruit)
+#abline(0, 0)
 
-standardized_res_num_fruit <- rstandard(num_fruit)
-plot(FruitRepro$size, standardized_res_num_fruit)
-abline(0, 0)
+#standardized_res_num_fruit <- rstandard(num_fruit)
+#plot(FruitRepro$size, standardized_res_num_fruit)
+#abline(0, 0)
 # bad!
 
 # remove the two browsing points, and look again
-FruitFireRepro <- FruitRepro[which(FruitRepro$Browse=="control"), ]
-fire_fruit <- lm(EstFruit ~ size + FRI, data = FruitFireRepro)
-res_fire_fruit <- resid(fire_fruit)
-plot(FruitFireRepro$size, res_fire_fruit)
-abline(0, 0)
+#FruitFireRepro <- FruitRepro[which(FruitRepro$Browse=="control"), ]
+#fire_fruit <- lm(EstFruit ~ size + FRI, data = FruitFireRepro)
+#res_fire_fruit <- resid(fire_fruit)
+#plot(FruitFireRepro$size, res_fire_fruit)
+#abline(0, 0)
 
-standardized_res_fire_fruit <- rstandard(fire_fruit)
-plot(FruitFireRepro$size, standardized_res_fire_fruit)
-abline(0, 0)
+#standardized_res_fire_fruit <- rstandard(fire_fruit)
+#plot(FruitFireRepro$size, standardized_res_fire_fruit)
+#abline(0, 0)
 # also bad!
 # use the average by size cop out instead; residuals were not normal, which is why we abandoned this
 
@@ -161,9 +161,6 @@ ggplot(FruitRepro, aes(x = size, y = EstFruit, group = Browse, color = Browse)) 
   geom_smooth(method = "lm")+
   facet_wrap(~FRI)
 
-ggplot(WedelRepro, aes(x = size2019, y = EstFruit2019)) +
-  geom_point()+
-  geom_smooth(method = "lm")
 #################################################################################
 # Function for fruiting probability
 prob_fruit <- glm(Fruit ~ Area_m2026 + Graze * FRI, family = binomial(link = "logit"), data = GliddenFruit)

@@ -25,6 +25,8 @@ DogwoodArea$Fruit <- ifelse(DogwoodNotes$Flowering[match(DogwoodArea$Id, Dogwood
 # Remove rows for shrubs that are too blob-like to use (i.e. growing into other islands)
 # This is a list of the shrubs excluded from Arc GIS
 ExcludeShrubs <- c(5, 22, 23, 25, 26, 33, 258, 259, 260, 261, 297, 298, 318, 319, 355, 357)
+# Make a list of shrubs to exclude for other reasons? I.e. they were in mowing treatment?
+MowShrubs <- 
 
 DogwoodArea <- DogwoodArea[!DogwoodArea$Id %in% ExcludeShrubs, ]
 

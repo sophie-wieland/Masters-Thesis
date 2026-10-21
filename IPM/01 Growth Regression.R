@@ -9,6 +9,7 @@ setwd("C:/Users/Sophie.Wieland/Documents/KSU/Masters Thesis/Dogwood IPM")
 
 WedelGrowth <- read.csv("../Literature Search for Model Building/Wedel Growth.csv")
 OConnorGrowth <- read.csv("../Literature Search for Model Building/OConnor Growth.csv")
+GliddenGrowth <- read.csv("../Literature Search for Model Building/Glidden/ProcessedN4CDogwood.csv")
 
 AerialGrowth <- read.csv("../Aerial Imagery/ChangeinSize.csv")
 
