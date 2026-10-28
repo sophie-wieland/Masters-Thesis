@@ -119,10 +119,26 @@ Repro2019 <- rename(Repro2019, c(EstFloweringStems = EstFloweringStems2019,
                                  SeedPerArea = SeedPerArea2019))
 
 Repro <- rbind(Repro2018, Repro2019)
+
 # make a subset where fruit number is not 0
 FruitRepro <- Repro[which(Repro$EstFruit>0), ]
 # because we're going to use the Glidden data first as probability of fruiting,
 # and this as the number of fruits (if you make it over the hurdle to fruiting)
+
+TreatmentArray <- readRDS("Array.rds")
+TreatmentArray[, , , , "Germ"] <- WielandGermRate
+
+FruitNumbers <- FruitRepro %>%
+  group_by(FRI, Browse) %>%
+  summarise(FruitNum = mean(SeedPerArea), .groups = "drop")
+
+for (i in nrows(FruitNumbers)) {
+  TreatmentArray[FruitNumbers$FRI[i], , FruitNumbers$Browse[i], , "FruitNum"] <-
+    FruitNumbers$FruitNum[i]
+} #browse names need to match, nrows returning an error
+
+#################################################################################
+# Bad residuals, didn't use
 
 #num_fruit <- lm(EstFruit ~ size + Browse * FRI, data = FruitRepro)
 #alt_num_fruit <- lm(EstFruit ~ size + Browse + FRI, data = FruitRepro)
