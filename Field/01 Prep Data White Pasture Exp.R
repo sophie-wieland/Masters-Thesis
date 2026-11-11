@@ -14,12 +14,13 @@ Aug6 <- read.csv("Dogwood_Demography_August_6_2026.csv")
 Sept8 <- read.csv("Dogwood_Demography_September_8_2026.csv")
 Oct6 <- read.csv("Dogwood_Demography_Oct_6_2026.csv")
 PostClip <- read.csv("Dogwood_Demography_Post_Late_Clip.csv")
+Nov7 <- read.csv("Dogwood_Demography_Nov_7_2026.csv")
 
 # Fixing one extra empty column
 June8 <- June8[,-10]
 
 # Combining data
-Data <- bind_rows(AtInstallation, June8, July3, July16, PostGoat, Aug6, Sept8, Oct6, PostClip)
+Data <- bind_rows(AtInstallation, June8, July3, July16, PostGoat, Aug6, Sept8, Oct6, PostClip, Nov7)
 # Convert the date column to the date class
 Data$Date <- as.Date(Data$Date, format = "%B %d, %Y")
 # Add a column for treatment
